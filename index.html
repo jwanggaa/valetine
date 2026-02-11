@@ -112,4 +112,144 @@ button {
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform:
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="confettiCanvas"></canvas>
+
+<main class="card">
+
+<h1>Tiara Fathiyah Nurrahmah,<br>Will you be my Valentine?</h1>
+
+<section class="button-zone" id="zone">
+  <button id="yesBtn">Yes</button>
+  <button id="noBtn">No</button>
+</section>
+
+<section class="result" id="result">
+  <h2>She said YES ❤️</h2>
+  <p>
+    Tiara Fathiyah Nurrahmah 💕<br><br>
+
+    I don’t even know where to start.<br><br>
+
+    I never expected someone could mean this much to me.
+    But here you are, changing my days in the simplest ways.<br><br>
+
+    You make normal moments feel special.
+    You make bad days feel lighter.
+    You make me want to be better without even trying to.<br><br>
+
+    I like how you laugh.
+    I like how you talk about things you care about.
+    I like how you stay.<br><br>
+
+    Being with you feels calm. It feels right.
+    Not dramatic. Not forced. Just real.<br><br>
+
+    I’m grateful for every conversation, every joke, every small moment we share.
+    And if I’m being honest, I don’t want this to be temporary.<br><br>
+
+    So yes, this is me choosing you.
+    Not just for today.
+    Not just because it’s Valentine’s.<br><br>
+
+    I choose you because you’re you.<br><br>
+
+    And if you’ll let me,
+    I’d like to keep choosing you again and again.<br><br>
+
+    Always.
+  </p>
+</section>
+
+</main>
+
+<script>
+const zone = document.getElementById("zone");
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const result = document.getElementById("result");
+
+const confettiCanvas = document.getElementById("confettiCanvas");
+
+function resizeCanvas() {
+  const dpr = Math.max(1, window.devicePixelRatio || 1);
+  confettiCanvas.width = window.innerWidth * dpr;
+  confettiCanvas.height = window.innerHeight * dpr;
+}
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
+
+const confettiInstance = confetti.create(confettiCanvas, {
+  resize: true,
+  useWorker: true
+});
+
+function fireConfetti() {
+  const end = Date.now() + 1500;
+  (function frame() {
+    confettiInstance({
+      particleCount: 10,
+      spread: 100,
+      origin: { x: Math.random(), y: Math.random() * 0.5 }
+    });
+    if (Date.now() < end) requestAnimationFrame(frame);
+  })();
+}
+
+let yesScale = 1;
+function growYes() {
+  yesScale = Math.min(2.2, yesScale + 0.1);
+  yesBtn.style.transform = `translateY(-50%) scale(${yesScale})`;
+}
+
+function clamp(n, min, max) {
+  return Math.max(min, Math.min(max, n));
+}
+
+function moveNo(x, y) {
+  const z = zone.getBoundingClientRect();
+  const b = noBtn.getBoundingClientRect();
+
+  let dx = (b.left + b.width/2) - x;
+  let dy = (b.top + b.height/2) - y;
+  let mag = Math.hypot(dx, dy) || 1;
+  dx /= mag;
+  dy /= mag;
+
+  let newLeft = (b.left - z.left) + dx * 150;
+  let newTop  = (b.top - z.top) + dy * 150;
+
+  newLeft = clamp(newLeft, 0, z.width - b.width);
+  newTop  = clamp(newTop, 0, z.height - b.height);
+
+  noBtn.style.left = newLeft + "px";
+  noBtn.style.top = newTop + "px";
+  noBtn.style.transform = "none";
+
+  growYes();
+}
+
+zone.addEventListener("pointermove", e => {
+  const b = noBtn.getBoundingClientRect();
+  const d = Math.hypot(
+    (b.left + b.width/2) - e.clientX,
+    (b.top + b.height/2) - e.clientY
+  );
+  if (d < 140) moveNo(e.clientX, e.clientY);
+});
+
+yesBtn.addEventListener("click", () => {
+  zone.style.display = "none";
+  result.style.display = "block";
+  fireConfetti();
+});
+</script>
+
+</body>
+</html>
