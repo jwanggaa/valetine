@@ -27,23 +27,11 @@ body {
   font-family: system-ui, sans-serif;
   overflow: hidden;
   padding: 16px;
+  transition: background 0.8s ease;
 }
 
-/* Floating hearts background */
-.heart {
-  position: fixed;
-  bottom: -20px;
-  font-size: 18px;
-  opacity: 0.4;
-  animation: floatUp linear forwards;
-  pointer-events: none;
-}
-
-@keyframes floatUp {
-  to {
-    transform: translateY(-110vh);
-    opacity: 0;
-  }
+body.romantic {
+  background: radial-gradient(circle at top, #2b0f1c, #000000);
 }
 
 #confettiCanvas {
@@ -63,12 +51,13 @@ body {
   border-radius: 22px;
   text-align: center;
   box-shadow: 0 18px 60px rgba(0,0,0,.15);
-  animation: fadeIn 1s ease;
+  transition: all .6s ease;
 }
 
 h1 {
   font-size: clamp(26px, 4vw, 38px);
   margin-bottom: 24px;
+  transition: .4s ease;
 }
 
 .button-zone {
@@ -118,7 +107,14 @@ button {
 
 .result h2 {
   font-size: 28px;
+  margin-bottom: 10px;
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+.countdown {
+  font-size: 16px;
   margin-bottom: 20px;
+  opacity: .8;
 }
 
 .result p {
@@ -126,7 +122,7 @@ button {
   line-height: 1.7;
   max-width: 600px;
   margin: 0 auto;
-  min-height: 120px;
+  white-space: pre-line;
 }
 
 .photo-wrapper {
@@ -136,22 +132,24 @@ button {
 }
 
 .photo-wrapper img {
-  width: 230px;
+  width: 240px;
   border-radius: 18px;
-  box-shadow: 0 15px 35px rgba(0,0,0,.25);
-  transform: rotate(-2deg);
-  transition: transform .4s ease, box-shadow .4s ease;
-  animation: fadeIn 1s ease;
+  box-shadow: 0 20px 45px rgba(0,0,0,.35);
+  transition: transform .4s ease;
 }
 
 .photo-wrapper img:hover {
-  transform: rotate(0deg) scale(1.03);
-  box-shadow: 0 20px 45px rgba(0,0,0,.3);
+  transform: scale(1.03);
 }
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes glow {
+  from { text-shadow: 0 0 5px rgba(255,59,122,.4); }
+  to { text-shadow: 0 0 15px rgba(255,59,122,.8); }
 }
 </style>
 </head>
@@ -162,7 +160,7 @@ button {
 
 <main class="card">
 
-<h1>Tiara Fathiyah Nurrahmah,<br>Will you be my Valentine?</h1>
+<h1 id="mainTitle">Tiara Fathiyah Nurrahmah,<br>Will you be my Valentine?</h1>
 
 <section class="button-zone" id="zone">
   <button id="yesBtn">Yes</button>
@@ -177,39 +175,9 @@ button {
 
   <h2>She said YES ❤️</h2>
 
-  <p id="loveText">
-    Tiara Fathiyah Nurrahmah 💕<br><br>
+  <div class="countdown" id="countdown"></div>
 
-    I don’t even know where to start.<br><br>
-
-    I never expected someone could mean this much to me.
-    But here you are, changing my days in the simplest ways.<br><br>
-
-    You make normal moments feel special.
-    You make bad days feel lighter.
-    You make me want to be better without even trying to.<br><br>
-
-    I like how you laugh.
-    I like how you talk about things you care about.
-    I like how you stay.<br><br>
-
-    Being with you feels calm. It feels right.
-    Not dramatic. Not forced. Just real.<br><br>
-
-    I’m grateful for every conversation, every joke, every small moment we share.
-    And if I’m being honest, I don’t want this to be temporary.<br><br>
-
-    So yes, this is me choosing you.
-    Not just for today.
-    Not just because it’s Valentine’s.<br><br>
-
-    I choose you because you’re you.<br><br>
-
-    And if you’ll let me,
-    I’d like to keep choosing you again and again.<br><br>
-
-    Always.
-  </p>
+  <p id="loveText"></p>
 
 </section>
 
@@ -221,6 +189,8 @@ const yesBtn = document.getElementById("yesBtn");
 const noBtn = document.getElementById("noBtn");
 const result = document.getElementById("result");
 const loveText = document.getElementById("loveText");
+const mainTitle = document.getElementById("mainTitle");
+const countdown = document.getElementById("countdown");
 
 const confettiCanvas = document.getElementById("confettiCanvas");
 
@@ -262,17 +232,23 @@ function clamp(n, min, max) {
 function moveNo(x, y) {
   const z = zone.getBoundingClientRect();
   const b = noBtn.getBoundingClientRect();
+
   let dx = (b.left + b.width/2) - x;
   let dy = (b.top + b.height/2) - y;
   let mag = Math.hypot(dx, dy) || 1;
-  dx /= mag; dy /= mag;
+  dx /= mag;
+  dy /= mag;
+
   let newLeft = (b.left - z.left) + dx * 150;
   let newTop  = (b.top - z.top) + dy * 150;
+
   newLeft = clamp(newLeft, 0, z.width - b.width);
   newTop  = clamp(newTop, 0, z.height - b.height);
+
   noBtn.style.left = newLeft + "px";
   noBtn.style.top = newTop + "px";
   noBtn.style.transform = "none";
+
   growYes();
 }
 
@@ -285,39 +261,72 @@ zone.addEventListener("pointermove", e => {
   if (d < 140) moveNo(e.clientX, e.clientY);
 });
 
-function typeEffect(element, speed = 20) {
-  const html = element.innerHTML;
-  element.innerHTML = "";
-  let i = 0;
-  function typing() {
-    if (i < html.length) {
-      element.innerHTML += html.charAt(i);
-      i++;
-      setTimeout(typing, speed);
-    }
+const fullText = `Tiara Fathiyah Nurrahmah 💕
+
+I don’t even know where to start.
+
+I never expected someone could mean this much to me.
+But here you are, changing my days in the simplest ways.
+
+You make normal moments feel special.
+You make bad days feel lighter.
+You make me want to be better without even trying to.
+
+I like how you laugh.
+I like how you talk about things you care about.
+I like how you stay.
+
+Being with you feels calm. It feels right.
+Not dramatic. Not forced. Just real.
+
+I’m grateful for every conversation, every joke, every small moment we share.
+And if I’m being honest, I don’t want this to be temporary.
+
+So yes, this is me choosing you.
+Not just for today.
+Not just because it’s Valentine’s.
+
+I choose you because you’re you.
+
+And if you’ll let me,
+I’d like to keep choosing you again and again.
+
+Always.`;
+
+let index = 0;
+
+function typeText() {
+  if (index < fullText.length) {
+    loveText.textContent += fullText.charAt(index);
+    index++;
+    setTimeout(typeText, 25);
   }
-  typing();
+}
+
+function updateCountdown() {
+  const start = new Date("November 19, 2024 00:00:00").getTime();
+  const now = new Date().getTime();
+  const diff = now - start;
+
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((diff / (1000 * 60)) % 60);
+  const seconds = Math.floor((diff / 1000) % 60);
+
+  countdown.textContent =
+    `Together for ${days} days ${hours} hours ${minutes} minutes ${seconds} seconds ❤️`;
 }
 
 yesBtn.addEventListener("click", () => {
   zone.style.display = "none";
   result.style.display = "block";
+  mainTitle.textContent = "She said YES ❤️";
+  document.body.classList.add("romantic");
   fireConfetti();
-  typeEffect(loveText, 18);
+  typeText();
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
 });
-
-/* Floating hearts generator */
-function createHeart() {
-  const heart = document.createElement("div");
-  heart.className = "heart";
-  heart.innerHTML = "❤️";
-  heart.style.left = Math.random() * 100 + "vw";
-  heart.style.animationDuration = (5 + Math.random() * 5) + "s";
-  heart.style.fontSize = (14 + Math.random() * 20) + "px";
-  document.body.appendChild(heart);
-  setTimeout(() => heart.remove(), 9000);
-}
-setInterval(createHeart, 900);
 </script>
 
 </body>
