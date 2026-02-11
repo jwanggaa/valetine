@@ -28,9 +28,9 @@ body{
   display:flex;
   align-items:center;
   justify-content:center;
-  transition:1s ease;
 }
 
+/* SCREENS */
 .screen{
   position:absolute;
   inset:0;
@@ -39,7 +39,7 @@ body{
   justify-content:center;
   text-align:center;
   padding:20px;
-  transition:.8s ease;
+  transition:.6s ease;
 }
 
 .hidden{
@@ -84,13 +84,14 @@ button{
   transform:scale(1.05);
 }
 
-.countdown{
+.countdown-big{
   font-size:80px;
   font-weight:800;
   color:var(--pink);
-  text-shadow:0 0 20px rgba(255,59,122,.8);
+  text-shadow:0 0 25px rgba(255,59,122,.9);
 }
 
+/* MAIN */
 .main-wrapper{
   display:none;
   min-height:100vh;
@@ -156,6 +157,17 @@ button{
   box-shadow:0 20px 45px rgba(0,0,0,.3);
 }
 
+.result p{
+  white-space:pre-line;
+  line-height:1.7;
+}
+
+.small-counter{
+  margin:10px 0 20px;
+  font-weight:600;
+  color:var(--pink);
+}
+
 .shake{
   animation:shake .4s;
 }
@@ -174,7 +186,7 @@ button{
 
 <canvas id="confettiCanvas"></canvas>
 
-<!-- Opening -->
+<!-- OPENING -->
 <div class="screen" id="opening">
   <div class="card">
     <h1>For someone who changed my world…</h1>
@@ -183,27 +195,27 @@ button{
   </div>
 </div>
 
-<!-- Password -->
+<!-- PASSWORD -->
 <div class="screen hidden" id="passwordScreen">
   <div class="card">
     <h1>Enter the date that changed everything</h1>
-    <input type="text" id="passwordInput" placeholder="DD MM YYYY">
+    <input type="text" id="passwordInput" placeholder="19 11 2024">
     <br>
     <button class="primary" onclick="checkPassword()">Unlock</button>
     <p id="errorMsg"></p>
   </div>
 </div>
 
-<!-- Countdown -->
+<!-- COUNTDOWN -->
 <div class="screen hidden" id="countdownScreen">
-  <div class="countdown" id="count">3</div>
+  <div class="countdown-big" id="count">3</div>
 </div>
 
-<!-- Main Section -->
+<!-- MAIN -->
 <div class="main-wrapper" id="mainWrapper">
   <div class="main-card">
 
-    <h1 id="mainHeader">
+    <h1 id="mainTitle">
       Tiara Fathiyah Nurrahmah,<br>
       Will you be my Valentine?
     </h1>
@@ -219,44 +231,13 @@ button{
         <img src="the-notebook.png" alt="Us">
       </div>
 
-      <p>
-        Tiara Fathiyah Nurrahmah 💕<br><br>
+      <h2 id="yesHeader" style="display:none;">She said YES ❤️</h2>
 
-        I don’t even know where to start.<br><br>
+      <div class="small-counter" id="counter"></div>
 
-        I never expected someone could mean this much to me.
-        But here you are, changing my days in the simplest ways.<br><br>
-
-        You make normal moments feel special.
-        You make bad days feel lighter.
-        You make me want to be better without even trying to.<br><br>
-
-        I like how you laugh.
-        I like how you talk about things you care about.
-        I like how you stay.<br><br>
-
-        Being with you feels calm. It feels right.
-        Not dramatic. Not forced. Just real.<br><br>
-
-        I’m grateful for every conversation, every joke, every small moment we share.
-        And if I’m being honest, I don’t want this to be temporary.<br><br>
-
-        So yes, this is me choosing you.
-        Not just for today.
-        Not just because it’s Valentine’s.<br><br>
-
-        I choose you because you’re you.<br><br>
-
-        And if you’ll let me,
-        I’d like to keep choosing you again and again.<br><br>
-
-        Always.<br><br>
-
-        P.S. I mean every word.
-      </p>
+      <p id="loveText"></p>
 
     </div>
-
   </div>
 </div>
 
@@ -272,10 +253,12 @@ const yesBtn=document.getElementById("yesBtn");
 const noBtn=document.getElementById("noBtn");
 const zone=document.getElementById("zone");
 const result=document.getElementById("result");
-const mainHeader=document.getElementById("mainHeader");
+const mainTitle=document.getElementById("mainTitle");
+const loveText=document.getElementById("loveText");
+const counter=document.getElementById("counter");
+const yesHeader=document.getElementById("yesHeader");
 
-const confettiCanvas=document.getElementById("confettiCanvas");
-const confettiInstance=confetti.create(confettiCanvas,{resize:true,useWorker:true});
+const confettiInstance=confetti.create(document.getElementById("confettiCanvas"),{resize:true,useWorker:true});
 
 function goPassword(){
   opening.classList.add("hidden");
@@ -295,20 +278,16 @@ function checkPassword(){
 }
 
 function startCountdown(){
-  let count=3;
+  let c=3;
   const interval=setInterval(()=>{
-    count--;
-    countEl.textContent=count;
-    if(count===0){
+    c--;
+    countEl.textContent=c;
+    if(c===0){
       clearInterval(interval);
       countdownScreen.classList.add("hidden");
       mainWrapper.style.display="flex";
     }
   },1000);
-}
-
-function fireConfetti(){
-  confettiInstance({particleCount:180,spread:120});
 }
 
 let yesScale=1;
@@ -322,26 +301,81 @@ function growYes(){
 zone.addEventListener("pointermove",e=>{
   const z=zone.getBoundingClientRect();
   const b=noBtn.getBoundingClientRect();
-
   const dx=(b.left+b.width/2)-e.clientX;
   const dy=(b.top+b.height/2)-e.clientY;
-  const dist=Math.hypot(dx,dy);
-
-  if(dist<120){
-    let newLeft=Math.random()*(z.width-b.width);
-    let newTop=Math.random()*(z.height-b.height);
-    noBtn.style.left=newLeft+"px";
-    noBtn.style.top=newTop+"px";
+  if(Math.hypot(dx,dy)<120){
+    noBtn.style.left=Math.random()*(z.width-b.width)+"px";
+    noBtn.style.top=Math.random()*(z.height-b.height)+"px";
     noBtn.style.transform="none";
     growYes();
   }
 });
 
+function fireConfetti(){
+  confettiInstance({particleCount:200,spread:120});
+}
+
+const fullText=`Tiara Fathiyah Nurrahmah 💕
+
+I don’t even know where to start.
+
+I never expected someone could mean this much to me.
+But here you are, changing my days in the simplest ways.
+
+You make normal moments feel special.
+You make bad days feel lighter.
+You make me want to be better without even trying to.
+
+I like how you laugh.
+I like how you talk about things you care about.
+I like how you stay.
+
+Being with you feels calm. It feels right.
+Not dramatic. Not forced. Just real.
+
+I’m grateful for every conversation, every joke, every small moment we share.
+And if I’m being honest, I don’t want this to be temporary.
+
+So yes, this is me choosing you.
+Not just for today.
+Not just because it’s Valentine’s.
+
+I choose you because you’re you.
+
+And if you’ll let me,
+I’d like to keep choosing you again and again.
+
+Always.;
+
+let index=0;
+function typeText(){
+  if(index<fullText.length){
+    loveText.textContent+=fullText[index];
+    index++;
+    setTimeout(typeText,25);
+  }
+}
+
+function updateCounter(){
+  const start=new Date("November 19, 2024 00:00:00").getTime();
+  const now=new Date().getTime();
+  const diff=now-start;
+  const days=Math.floor(diff/(1000*60*60*24));
+  const hours=Math.floor((diff/(1000*60*60))%24);
+  const minutes=Math.floor((diff/(1000*60))%60);
+  const seconds=Math.floor((diff/1000)%60);
+  counter.textContent=`Together for ${days} days ${hours} hours ${minutes} minutes ${seconds} seconds ❤️`;
+}
+
 yesBtn.addEventListener("click",()=>{
   zone.style.display="none";
-  mainHeader.innerHTML="She said YES ❤️";
+  mainTitle.style.display="none";
+  yesHeader.style.display="block";
   result.style.display="block";
   fireConfetti();
+  typeText();
+  updateCounter();
+  setInterval(updateCounter,1000);
 });
 </script>
 
