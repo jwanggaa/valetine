@@ -11,7 +11,7 @@
 :root {
   --bg1: #ffd6e7;
   --bg2: #ffeef6;
-  --card: #ffffffdd;
+  --card: #ffffffee;
   --yes: #ff3b7a;
   --yesHover: #ff1f68;
 }
@@ -49,8 +49,8 @@ body {
 }
 
 h1 {
-  font-size: clamp(26px, 4vw, 40px);
-  margin: 0 0 20px;
+  font-size: clamp(26px, 4vw, 38px);
+  margin-bottom: 24px;
 }
 
 .button-zone {
@@ -92,14 +92,14 @@ button {
 .result {
   display: none;
   margin-top: 20px;
-  max-height: 60vh;
+  max-height: 65vh;
   overflow-y: auto;
   padding-right: 8px;
-  animation: fadeIn .6s ease;
+  animation: fadeIn .7s ease;
 }
 
 .result h2 {
-  font-size: 30px;
+  font-size: 28px;
   margin-bottom: 20px;
 }
 
@@ -108,6 +108,26 @@ button {
   line-height: 1.7;
   max-width: 600px;
   margin: 0 auto;
+}
+
+.photo-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.photo-wrapper img {
+  width: 230px;
+  border-radius: 18px;
+  box-shadow: 0 15px 35px rgba(0,0,0,.25);
+  transform: rotate(-2deg);
+  transition: transform .4s ease, box-shadow .4s ease;
+  animation: fadeIn 1s ease;
+}
+
+.photo-wrapper img:hover {
+  transform: rotate(0deg) scale(1.03);
+  box-shadow: 0 20px 45px rgba(0,0,0,.3);
 }
 
 @keyframes fadeIn {
@@ -131,7 +151,13 @@ button {
 </section>
 
 <section class="result" id="result">
+
+  <div class="photo-wrapper">
+    <img src="the-notebook.png" alt="Us">
+  </div>
+
   <h2>She said YES ❤️</h2>
+
   <p>
     Tiara Fathiyah Nurrahmah 💕<br><br>
 
@@ -163,8 +189,11 @@ button {
     And if you’ll let me,
     I’d like to keep choosing you again and again.<br><br>
 
-    Always.
+    Always.<br><br>
+
+    P.S. I mean every word.
   </p>
+
 </section>
 
 </main>
@@ -194,7 +223,7 @@ function fireConfetti() {
   const end = Date.now() + 1500;
   (function frame() {
     confettiInstance({
-      particleCount: 10,
+      particleCount: 12,
       spread: 100,
       origin: { x: Math.random(), y: Math.random() * 0.5 }
     });
