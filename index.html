@@ -9,23 +9,25 @@
 
 <style>
 :root{
+  --bg1:#ffd6e7;
+  --bg2:#ffeef6;
+  --card:#ffffffee;
   --pink:#ff3b7a;
-  --bg-dark:#0f0f14;
-  --bg-soft:#1a1a22;
+  --pinkHover:#ff1f68;
 }
 
 *{box-sizing:border-box}
 
 body{
   margin:0;
-  font-family:system-ui, sans-serif;
-  background:var(--bg-dark);
+  font-family:system-ui,sans-serif;
+  height:100vh;
+  overflow:hidden;
+  background:#0f0f14;
   color:white;
   display:flex;
   align-items:center;
   justify-content:center;
-  height:100vh;
-  overflow:hidden;
   transition:1s ease;
 }
 
@@ -33,7 +35,6 @@ body{
   position:absolute;
   inset:0;
   display:flex;
-  flex-direction:column;
   align-items:center;
   justify-content:center;
   text-align:center;
@@ -55,18 +56,22 @@ body{
   box-shadow:0 20px 60px rgba(0,0,0,.4);
 }
 
-h1{
-  font-size:clamp(26px,4vw,38px);
-  margin-bottom:20px;
+input{
+  padding:12px 16px;
+  border-radius:10px;
+  border:none;
+  margin-bottom:16px;
+  font-size:16px;
+  text-align:center;
 }
 
 button{
   padding:14px 26px;
   font-size:18px;
+  font-weight:700;
   border:none;
   border-radius:999px;
   cursor:pointer;
-  font-weight:700;
   transition:.25s ease;
 }
 
@@ -79,15 +84,6 @@ button{
   transform:scale(1.05);
 }
 
-input{
-  padding:12px 16px;
-  border-radius:10px;
-  border:none;
-  margin-bottom:16px;
-  font-size:16px;
-  text-align:center;
-}
-
 .countdown{
   font-size:80px;
   font-weight:800;
@@ -95,20 +91,44 @@ input{
   text-shadow:0 0 20px rgba(255,59,122,.8);
 }
 
+.main-wrapper{
+  display:none;
+  min-height:100vh;
+  width:100%;
+  background:radial-gradient(circle at top,var(--bg2),var(--bg1));
+  color:black;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.main-card{
+  width:min(720px,92vw);
+  padding:28px 24px;
+  background:var(--card);
+  border-radius:22px;
+  text-align:center;
+  box-shadow:0 18px 60px rgba(0,0,0,.15);
+}
+
 .button-zone{
   position:relative;
   width:420px;
-  height:140px;
-  margin:auto;
+  height:150px;
+  margin:0 auto;
 }
 
 #yesBtn{
   position:absolute;
-  left:20%;
+  left:18%;
   top:50%;
   transform:translateY(-50%);
   background:var(--pink);
   color:white;
+}
+
+#yesBtn:hover{
+  background:var(--pinkHover);
 }
 
 #noBtn{
@@ -116,10 +136,11 @@ input{
   left:60%;
   top:50%;
   transform:translateY(-50%);
-  background:#ccc;
+  background:#e5e7eb;
 }
 
 .result{
+  display:none;
   margin-top:20px;
   max-height:60vh;
   overflow:auto;
@@ -130,18 +151,9 @@ input{
 }
 
 .photo-wrapper img{
-  width:240px;
+  width:230px;
   border-radius:18px;
-  box-shadow:0 20px 45px rgba(0,0,0,.6);
-}
-
-.fade{
-  animation:fadeIn 1s ease forwards;
-}
-
-@keyframes fadeIn{
-  from{opacity:0;transform:translateY(10px)}
-  to{opacity:1;transform:translateY(0)}
+  box-shadow:0 20px 45px rgba(0,0,0,.3);
 }
 
 .shake{
@@ -164,7 +176,7 @@ input{
 
 <!-- Opening -->
 <div class="screen" id="opening">
-  <div class="card fade">
+  <div class="card">
     <h1>For someone who changed my world…</h1>
     <p>Tiara Fathiyah Nurrahmah</p>
     <button class="primary" onclick="goPassword()">Continue</button>
@@ -187,9 +199,9 @@ input{
   <div class="countdown" id="count">3</div>
 </div>
 
-<!-- Main -->
-<div class="screen hidden" id="mainScreen">
-  <div class="card">
+<!-- Main Section -->
+<div class="main-wrapper" id="mainWrapper">
+  <div class="main-card">
 
     <h1 id="mainHeader">
       Tiara Fathiyah Nurrahmah,<br>
@@ -201,7 +213,7 @@ input{
       <button id="noBtn">No</button>
     </div>
 
-    <div class="result" id="result" style="display:none">
+    <div class="result" id="result">
 
       <div class="photo-wrapper">
         <img src="the-notebook.png" alt="Us">
@@ -249,21 +261,21 @@ input{
 </div>
 
 <script>
-const opening = document.getElementById("opening");
-const passwordScreen = document.getElementById("passwordScreen");
-const countdownScreen = document.getElementById("countdownScreen");
-const mainScreen = document.getElementById("mainScreen");
-const countEl = document.getElementById("count");
-const passwordInput = document.getElementById("passwordInput");
-const errorMsg = document.getElementById("errorMsg");
-const yesBtn = document.getElementById("yesBtn");
-const noBtn = document.getElementById("noBtn");
-const zone = document.getElementById("zone");
-const result = document.getElementById("result");
-const mainHeader = document.getElementById("mainHeader");
+const opening=document.getElementById("opening");
+const passwordScreen=document.getElementById("passwordScreen");
+const countdownScreen=document.getElementById("countdownScreen");
+const mainWrapper=document.getElementById("mainWrapper");
+const countEl=document.getElementById("count");
+const passwordInput=document.getElementById("passwordInput");
+const errorMsg=document.getElementById("errorMsg");
+const yesBtn=document.getElementById("yesBtn");
+const noBtn=document.getElementById("noBtn");
+const zone=document.getElementById("zone");
+const result=document.getElementById("result");
+const mainHeader=document.getElementById("mainHeader");
 
-const confettiCanvas = document.getElementById("confettiCanvas");
-const confettiInstance = confetti.create(confettiCanvas,{resize:true,useWorker:true});
+const confettiCanvas=document.getElementById("confettiCanvas");
+const confettiInstance=confetti.create(confettiCanvas,{resize:true,useWorker:true});
 
 function goPassword(){
   opening.classList.add("hidden");
@@ -290,32 +302,36 @@ function startCountdown(){
     if(count===0){
       clearInterval(interval);
       countdownScreen.classList.add("hidden");
-      document.body.style.background="radial-gradient(circle at top,#ffeef6,#ffd6e7)";
-      document.body.style.color="black";
-      mainScreen.classList.remove("hidden");
+      mainWrapper.style.display="flex";
     }
   },1000);
 }
 
 function fireConfetti(){
-  confettiInstance({particleCount:200,spread:120});
+  confettiInstance({particleCount:180,spread:120});
 }
 
 let yesScale=1;
 function growYes(){
-  yesScale+=0.1;
-  yesBtn.style.transform=`translateY(-50%) scale(${yesScale})`;
+  if(yesScale<1.8){
+    yesScale+=0.08;
+    yesBtn.style.transform=`translateY(-50%) scale(${yesScale})`;
+  }
 }
 
 zone.addEventListener("pointermove",e=>{
-  const rect=noBtn.getBoundingClientRect();
-  const dist=Math.hypot(
-    (rect.left+rect.width/2)-e.clientX,
-    (rect.top+rect.height/2)-e.clientY
-  );
+  const z=zone.getBoundingClientRect();
+  const b=noBtn.getBoundingClientRect();
+
+  const dx=(b.left+b.width/2)-e.clientX;
+  const dy=(b.top+b.height/2)-e.clientY;
+  const dist=Math.hypot(dx,dy);
+
   if(dist<120){
-    noBtn.style.left=Math.random()*300+"px";
-    noBtn.style.top=Math.random()*100+"px";
+    let newLeft=Math.random()*(z.width-b.width);
+    let newTop=Math.random()*(z.height-b.height);
+    noBtn.style.left=newLeft+"px";
+    noBtn.style.top=newTop+"px";
     noBtn.style.transform="none";
     growYes();
   }
