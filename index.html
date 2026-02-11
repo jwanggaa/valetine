@@ -1,332 +1,174 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>For Tiara ❤️</title>
 
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-
 <style>
-:root {
-  --bg1: #ffd6e7;
-  --bg2: #ffeef6;
-  --card: #ffffffee;
-  --yes: #ff3b7a;
-  --yesHover: #ff1f68;
-}
-
-* { box-sizing: border-box; }
-
 body {
-  margin: 0;
-  min-height: 100vh;
-  display: grid;
-  place-items: center;
-  background: radial-gradient(circle at top, var(--bg2), var(--bg1));
-  font-family: system-ui, sans-serif;
-  overflow: hidden;
-  padding: 16px;
-  transition: background 0.8s ease;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+    font-family: 'Segoe UI', sans-serif;
+    text-align: center;
+    overflow-x: hidden;
+    color: white;
 }
 
-body.romantic {
-  background: radial-gradient(circle at top, #2b0f1c, #000000);
-}
-
-#confettiCanvas {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  z-index: 9999;
-}
-
-.card {
-  width: min(720px, 92vw);
-  padding: 28px 24px;
-  background: var(--card);
-  backdrop-filter: blur(10px);
-  border-radius: 22px;
-  text-align: center;
-  box-shadow: 0 18px 60px rgba(0,0,0,.15);
-  transition: all .6s ease;
+.container {
+    margin-top: 80px;
 }
 
 h1 {
-  font-size: clamp(26px, 4vw, 38px);
-  margin-bottom: 24px;
-  transition: .4s ease;
-}
-
-.button-zone {
-  position: relative;
-  width: min(520px, 92%);
-  height: 150px;
-  margin: 0 auto;
+    font-size: 2.5rem;
+    transition: 0.5s ease;
 }
 
 button {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  padding: 16px 26px;
-  font-size: 18px;
-  font-weight: 700;
-  border-radius: 999px;
-  border: none;
-  cursor: pointer;
-  box-shadow: 0 10px 24px rgba(0,0,0,.14);
-  transition: .2s ease;
+    padding: 12px 25px;
+    margin: 15px;
+    font-size: 16px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
-#yesBtn {
-  left: 18%;
-  background: var(--yes);
-  color: white;
+.yes {
+    background-color: #ff4d6d;
+    color: white;
 }
 
-#yesBtn:hover {
-  background: var(--yesHover);
+.no {
+    background-color: white;
+    color: #ff4d6d;
 }
 
-#noBtn {
-  left: 62%;
-  background: #e5e7eb;
+button:hover {
+    transform: scale(1.1);
 }
 
-.result {
-  display: none;
-  margin-top: 20px;
-  max-height: 65vh;
-  overflow-y: auto;
-  padding-right: 8px;
-  animation: fadeIn .7s ease;
+#result {
+    margin-top: 30px;
+    font-size: 1.1rem;
+    width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+    min-height: 100px;
 }
 
-.result h2 {
-  font-size: 28px;
-  margin-bottom: 10px;
-  animation: glow 2s ease-in-out infinite alternate;
+img {
+    margin-top: 25px;
+    width: 300px;
+    border-radius: 20px;
+    display: none;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.4);
 }
 
-.countdown {
-  font-size: 16px;
-  margin-bottom: 20px;
-  opacity: .8;
+#countdown {
+    margin-top: 20px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-shadow: 0 0 15px #fff, 0 0 30px #ff4d6d;
+    display: none;
 }
 
-.result p {
-  font-size: 17px;
-  line-height: 1.7;
-  max-width: 600px;
-  margin: 0 auto;
-  white-space: pre-line;
+/* Floating hearts */
+.heart {
+    position: fixed;
+    bottom: -10px;
+    font-size: 20px;
+    animation: float 6s linear infinite;
+    opacity: 0.7;
 }
 
-.photo-wrapper {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 24px;
-}
-
-.photo-wrapper img {
-  width: 240px;
-  border-radius: 18px;
-  box-shadow: 0 20px 45px rgba(0,0,0,.35);
-  transition: transform .4s ease;
-}
-
-.photo-wrapper img:hover {
-  transform: scale(1.03);
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes glow {
-  from { text-shadow: 0 0 5px rgba(255,59,122,.4); }
-  to { text-shadow: 0 0 15px rgba(255,59,122,.8); }
+@keyframes float {
+    0% {
+        transform: translateY(0);
+        opacity: 0.7;
+    }
+    100% {
+        transform: translateY(-100vh);
+        opacity: 0;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<canvas id="confettiCanvas"></canvas>
+<div class="container">
+    <h1 id="mainTitle">Tiara Fathiyah Nurrahmah,<br>Will you be my Valentine?</h1>
 
-<main class="card">
+    <button class="yes" onclick="sayYes()">Yes ❤️</button>
+    <button class="no" onclick="sayNo()">No 💔</button>
 
-<h1 id="mainTitle">Tiara Fathiyah Nurrahmah,<br>Will you be my Valentine?</h1>
-
-<section class="button-zone" id="zone">
-  <button id="yesBtn">Yes</button>
-  <button id="noBtn">No</button>
-</section>
-
-<section class="result" id="result">
-
-  <div class="photo-wrapper">
-    <img src="the-notebook.png" alt="Us">
-  </div>
-
-  <h2>She said YES ❤️</h2>
-
-  <div class="countdown" id="countdown"></div>
-
-  <p id="loveText"></p>
-
-</section>
-
-</main>
+    <div id="result"></div>
+    <img id="photo" src="the-notebook.png" alt="The Notebook">
+    <div id="countdown"></div>
+</div>
 
 <script>
-const zone = document.getElementById("zone");
-const yesBtn = document.getElementById("yesBtn");
-const noBtn = document.getElementById("noBtn");
-const result = document.getElementById("result");
-const loveText = document.getElementById("loveText");
-const mainTitle = document.getElementById("mainTitle");
-const countdown = document.getElementById("countdown");
-
-const confettiCanvas = document.getElementById("confettiCanvas");
-
-function resizeCanvas() {
-  const dpr = Math.max(1, window.devicePixelRatio || 1);
-  confettiCanvas.width = window.innerWidth * dpr;
-  confettiCanvas.height = window.innerHeight * dpr;
-}
-resizeCanvas();
-window.addEventListener("resize", resizeCanvas);
-
-const confettiInstance = confetti.create(confettiCanvas, {
-  resize: true,
-  useWorker: true
-});
-
-function fireConfetti() {
-  const end = Date.now() + 1500;
-  (function frame() {
-    confettiInstance({
-      particleCount: 12,
-      spread: 100,
-      origin: { x: Math.random(), y: Math.random() * 0.5 }
-    });
-    if (Date.now() < end) requestAnimationFrame(frame);
-  })();
+function typeEffect(text, element, speed) {
+    let i = 0;
+    element.innerHTML = "";
+    function typing() {
+        if (i < text.length) {
+            element.innerHTML += text.charAt(i);
+            i++;
+            setTimeout(typing, speed);
+        }
+    }
+    typing();
 }
 
-let yesScale = 1;
-function growYes() {
-  yesScale = Math.min(2.2, yesScale + 0.1);
-  yesBtn.style.transform = `translateY(-50%) scale(${yesScale})`;
+function sayYes() {
+    document.getElementById("mainTitle").innerHTML = "She said YES ❤️";
+
+    let longText = "From the first time I met you, something felt different. You make everything brighter without even trying. Your smile, your laugh, the way you care about the smallest things. Every moment with you feels like something I never want to end. And since November 19, 2024, my world has been better in ways I cannot even explain. I am grateful for you every single day.";
+
+    typeEffect(longText, document.getElementById("result"), 40);
+
+    document.getElementById("photo").style.display = "block";
+    document.getElementById("countdown").style.display = "block";
 }
 
-function clamp(n, min, max) {
-  return Math.max(min, Math.min(max, n));
+function sayNo() {
+    alert("Are you sure? Try pressing Yes ❤️");
 }
 
-function moveNo(x, y) {
-  const z = zone.getBoundingClientRect();
-  const b = noBtn.getBoundingClientRect();
+let countDownDate = new Date("Nov 19, 2024 00:00:00").getTime();
 
-  let dx = (b.left + b.width/2) - x;
-  let dy = (b.top + b.height/2) - y;
-  let mag = Math.hypot(dx, dy) || 1;
-  dx /= mag;
-  dy /= mag;
+let x = setInterval(function() {
+    let now = new Date().getTime();
+    let distance = now - countDownDate;
 
-  let newLeft = (b.left - z.left) + dx * 150;
-  let newTop  = (b.top - z.top) + dy * 150;
+    let days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    let seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-  newLeft = clamp(newLeft, 0, z.width - b.width);
-  newTop  = clamp(newTop, 0, z.height - b.height);
+    document.getElementById("countdown").innerHTML =
+    "Together for " + days + " days " + hours + " hours " + minutes + " minutes " + seconds + " seconds ❤️";
 
-  noBtn.style.left = newLeft + "px";
-  noBtn.style.top = newTop + "px";
-  noBtn.style.transform = "none";
+}, 1000);
 
-  growYes();
-}
+/* Floating hearts generator */
+setInterval(function() {
+    let heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "❤️";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.fontSize = (Math.random() * 20 + 10) + "px";
+    heart.style.animationDuration = (Math.random() * 3 + 3) + "s";
+    document.body.appendChild(heart);
 
-zone.addEventListener("pointermove", e => {
-  const b = noBtn.getBoundingClientRect();
-  const d = Math.hypot(
-    (b.left + b.width/2) - e.clientX,
-    (b.top + b.height/2) - e.clientY
-  );
-  if (d < 140) moveNo(e.clientX, e.clientY);
-});
+    setTimeout(function() {
+        heart.remove();
+    }, 6000);
 
-const fullText = `Tiara Fathiyah Nurrahmah 💕
-
-I don’t even know where to start.
-
-I never expected someone could mean this much to me.
-But here you are, changing my days in the simplest ways.
-
-You make normal moments feel special.
-You make bad days feel lighter.
-You make me want to be better without even trying to.
-
-I like how you laugh.
-I like how you talk about things you care about.
-I like how you stay.
-
-Being with you feels calm. It feels right.
-Not dramatic. Not forced. Just real.
-
-I’m grateful for every conversation, every joke, every small moment we share.
-And if I’m being honest, I don’t want this to be temporary.
-
-So yes, this is me choosing you.
-Not just for today.
-Not just because it’s Valentine’s.
-
-I choose you because you’re you.
-
-And if you’ll let me,
-I’d like to keep choosing you again and again.
-
-Always.`;
-
-let index = 0;
-
-function typeText() {
-  if (index < fullText.length) {
-    loveText.textContent += fullText.charAt(index);
-    index++;
-    setTimeout(typeText, 25);
-  }
-}
-
-function updateCountdown() {
-  const start = new Date("November 19, 2024 00:00:00").getTime();
-  const now = new Date().getTime();
-  const diff = now - start;
-
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-  const minutes = Math.floor((diff / (1000 * 60)) % 60);
-  const seconds = Math.floor((diff / 1000) % 60);
-
-  countdown.textContent =
-    `Together for ${days} days ${hours} hours ${minutes} minutes ${seconds} seconds ❤️`;
-}
-
-yesBtn.addEventListener("click", () => {
-  zone.style.display = "none";
-  result.style.display = "block";
-  mainTitle.textContent = "She said YES ❤️";
-  document.body.classList.add("romantic");
-  fireConfetti();
-  typeText();
-  updateCountdown();
-  setInterval(updateCountdown, 1000);
-});
+}, 500);
 </script>
 
 </body>
