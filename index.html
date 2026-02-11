@@ -142,8 +142,6 @@ button {
   transform: scale(1.03);
 }
 
-.hidden { display: none; }
-
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -162,60 +160,40 @@ button {
 
 <main class="card">
 
-<!-- OPENING -->
-<div id="opening">
-<h1>For someone who changed my world…</h1>
-<p>Enter our date</p>
-<input type="password" id="passwordInput" placeholder="19 11 2024" style="padding:10px;border-radius:8px;border:1px solid #ccc;">
-<br><br>
-<button onclick="checkPassword()">Unlock</button>
-<p id="errorMsg" style="color:red;"></p>
-</div>
-
-<!-- COUNTDOWN 3-2-1 -->
-<div id="count321" class="hidden">
-<h1 id="countText">3</h1>
-</div>
-
-<!-- QUESTION -->
-<div id="question" class="hidden">
 <h1 id="mainTitle">Tiara Fathiyah Nurrahmah,<br>Will you be my Valentine?</h1>
+
 <section class="button-zone" id="zone">
   <button id="yesBtn">Yes</button>
   <button id="noBtn">No</button>
 </section>
-</div>
 
-<!-- RESULT -->
-<div id="result" class="result hidden">
-<div class="photo-wrapper">
-<img src="the-notebook.png" alt="Us">
-</div>
+<section class="result" id="result">
 
-<h2>She said YES ❤️</h2>
+  <div class="photo-wrapper">
+    <img src="the-notebook.png" alt="Us">
+  </div>
 
-<div class="countdown" id="countdown"></div>
+  <h2>She said YES ❤️</h2>
 
-<p id="loveText"></p>
-</div>
+  <div class="countdown" id="countdown"></div>
+
+  <p id="loveText"></p>
+
+</section>
 
 </main>
 
 <script>
-const passwordInput = document.getElementById("passwordInput");
-const opening = document.getElementById("opening");
-const count321 = document.getElementById("count321");
-const question = document.getElementById("question");
-const result = document.getElementById("result");
-const countText = document.getElementById("countText");
+const zone = document.getElementById("zone");
 const yesBtn = document.getElementById("yesBtn");
 const noBtn = document.getElementById("noBtn");
-const zone = document.getElementById("zone");
+const result = document.getElementById("result");
 const loveText = document.getElementById("loveText");
 const mainTitle = document.getElementById("mainTitle");
 const countdown = document.getElementById("countdown");
 
 const confettiCanvas = document.getElementById("confettiCanvas");
+
 function resizeCanvas() {
   const dpr = Math.max(1, window.devicePixelRatio || 1);
   confettiCanvas.width = window.innerWidth * dpr;
@@ -224,7 +202,11 @@ function resizeCanvas() {
 resizeCanvas();
 window.addEventListener("resize", resizeCanvas);
 
-const confettiInstance = confetti.create(confettiCanvas, { resize: true, useWorker: true });
+const confettiInstance = confetti.create(confettiCanvas, {
+  resize: true,
+  useWorker: true
+});
+
 function fireConfetti() {
   const end = Date.now() + 1500;
   (function frame() {
@@ -237,54 +219,31 @@ function fireConfetti() {
   })();
 }
 
-function checkPassword(){
-  if(passwordInput.value === "19 11 2024"){
-    opening.classList.add("hidden");
-    count321.classList.remove("hidden");
-    start321();
-  } else {
-    document.getElementById("errorMsg").textContent = "Wrong date.";
-  }
-}
-
-function start321(){
-  let n = 3;
-  const interval = setInterval(()=>{
-    n--;
-    if(n===0){
-      clearInterval(interval);
-      count321.classList.add("hidden");
-      question.classList.remove("hidden");
-    } else {
-      countText.textContent = n;
-    }
-  },1000);
-}
-
-// NO BUTTON MOVE
 let yesScale = 1;
 function growYes() {
   yesScale = Math.min(2.2, yesScale + 0.1);
   yesBtn.style.transform = `translateY(-50%) scale(${yesScale})`;
 }
 
-function clamp(n,min,max){ return Math.max(min,Math.min(max,n)); }
+function clamp(n, min, max) {
+  return Math.max(min, Math.min(max, n));
+}
 
-function moveNo(x,y){
+function moveNo(x, y) {
   const z = zone.getBoundingClientRect();
   const b = noBtn.getBoundingClientRect();
 
   let dx = (b.left + b.width/2) - x;
   let dy = (b.top + b.height/2) - y;
-  let mag = Math.hypot(dx,dy)||1;
-  dx/=mag;
-  dy/=mag;
+  let mag = Math.hypot(dx, dy) || 1;
+  dx /= mag;
+  dy /= mag;
 
-  let newLeft = (b.left - z.left) + dx*150;
-  let newTop = (b.top - z.top) + dy*150;
+  let newLeft = (b.left - z.left) + dx * 150;
+  let newTop  = (b.top - z.top) + dy * 150;
 
-  newLeft = clamp(newLeft,0,z.width-b.width);
-  newTop = clamp(newTop,0,z.height-b.height);
+  newLeft = clamp(newLeft, 0, z.width - b.width);
+  newTop  = clamp(newTop, 0, z.height - b.height);
 
   noBtn.style.left = newLeft + "px";
   noBtn.style.top = newTop + "px";
@@ -293,13 +252,15 @@ function moveNo(x,y){
   growYes();
 }
 
-zone.addEventListener("pointermove", e=>{
+zone.addEventListener("pointermove", e => {
   const b = noBtn.getBoundingClientRect();
-  const d = Math.hypot((b.left+b.width/2)-e.clientX,(b.top+b.height/2)-e.clientY);
-  if(d<140) moveNo(e.clientX,e.clientY);
+  const d = Math.hypot(
+    (b.left + b.width/2) - e.clientX,
+    (b.top + b.height/2) - e.clientY
+  );
+  if (d < 140) moveNo(e.clientX, e.clientY);
 });
 
-// TYPE TEXT
 const fullText = `Tiara Fathiyah Nurrahmah 💕
 
 I don’t even know where to start.
@@ -330,43 +291,41 @@ I choose you because you’re you.
 And if you’ll let me,
 I’d like to keep choosing you again and again.
 
-Always.
-
-P.S. I mean every word.`;
+Always.`;
 
 let index = 0;
-function typeText(){
-  if(index<fullText.length){
+
+function typeText() {
+  if (index < fullText.length) {
     loveText.textContent += fullText.charAt(index);
     index++;
-    setTimeout(typeText,25);
+    setTimeout(typeText, 25);
   }
 }
 
-// COUNTDOWN
-function updateCountdown(){
-  const start=new Date("November 19, 2024 00:00:00").getTime();
-  const now=new Date().getTime();
-  const diff=now-start;
+function updateCountdown() {
+  const start = new Date("November 19, 2024 00:00:00").getTime();
+  const now = new Date().getTime();
+  const diff = now - start;
 
-  const days=Math.floor(diff/(1000*60*60*24));
-  const hours=Math.floor((diff/(1000*60*60))%24);
-  const minutes=Math.floor((diff/(1000*60))%60);
-  const seconds=Math.floor((diff/1000)%60);
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((diff / (1000 * 60)) % 60);
+  const seconds = Math.floor((diff / 1000) % 60);
 
-  countdown.textContent = `Together for ${days} days ${hours} hours ${minutes} minutes ${seconds} seconds ❤️`;
+  countdown.textContent =
+    `Together for ${days} days ${hours} hours ${minutes} minutes ${seconds} seconds ❤️`;
 }
 
-// YES BUTTON
-yesBtn.addEventListener("click",()=>{
-  question.classList.add("hidden");
-  result.style.display="block";
-  mainTitle.textContent="She said YES ❤️";
+yesBtn.addEventListener("click", () => {
+  zone.style.display = "none";
+  result.style.display = "block";
+  mainTitle.textContent = "Tiara Fathiyah Nurrahmah, Will you be my Valentine?";
   document.body.classList.add("romantic");
   fireConfetti();
   typeText();
   updateCountdown();
-  setInterval(updateCountdown,1000);
+  setInterval(updateCountdown, 1000);
 });
 </script>
 
