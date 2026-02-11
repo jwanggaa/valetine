@@ -5,170 +5,274 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>For Tiara ❤️</title>
 
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
 <style>
-body {
-    margin: 0;
-    padding: 0;
-    background: linear-gradient(135deg, #ffdde1, #ee9ca7);
-    font-family: 'Segoe UI', sans-serif;
-    text-align: center;
-    overflow-x: hidden;
-    color: white;
+:root{
+  --bg1:#ffd6e7;
+  --bg2:#ffeef6;
+  --card:#ffffffee;
+  --yes:#ff3b7a;
+  --yesHover:#ff1f68;
 }
 
-.container {
-    margin-top: 80px;
+*{box-sizing:border-box;}
+
+body{
+  margin:0;
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  background:radial-gradient(circle at top,var(--bg2),var(--bg1));
+  font-family:system-ui,sans-serif;
+  overflow:hidden;
+  transition:.6s ease;
 }
 
-h1 {
-    font-size: 2.5rem;
-    transition: 0.5s ease;
+body.romantic{
+  background:radial-gradient(circle at top,#2b0f1c,#000);
 }
 
-button {
-    padding: 12px 25px;
-    margin: 15px;
-    font-size: 16px;
-    border: none;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: 0.3s;
+.card{
+  width:min(720px,92vw);
+  padding:28px 24px;
+  background:var(--card);
+  border-radius:22px;
+  text-align:center;
+  box-shadow:0 18px 60px rgba(0,0,0,.15);
+  transition:.6s ease;
 }
 
-.yes {
-    background-color: #ff4d6d;
-    color: white;
+.hidden{display:none;}
+
+h1{
+  font-size:clamp(26px,4vw,38px);
+  margin-bottom:20px;
 }
 
-.no {
-    background-color: white;
-    color: #ff4d6d;
+button{
+  padding:14px 24px;
+  font-size:18px;
+  font-weight:700;
+  border-radius:999px;
+  border:none;
+  cursor:pointer;
+  box-shadow:0 10px 24px rgba(0,0,0,.14);
+  transition:.2s ease;
 }
 
-button:hover {
-    transform: scale(1.1);
+button:hover{transform:scale(1.05);}
+
+#yesBtn{
+  background:var(--yes);
+  color:white;
 }
 
-#result {
-    margin-top: 30px;
-    font-size: 1.1rem;
-    width: 70%;
-    margin-left: auto;
-    margin-right: auto;
-    min-height: 100px;
+#yesBtn:hover{background:var(--yesHover);}
+
+#noBtn{
+  background:#e5e7eb;
+  position:absolute;
 }
 
-img {
-    margin-top: 25px;
-    width: 300px;
-    border-radius: 20px;
-    display: none;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+.button-zone{
+  position:relative;
+  width:420px;
+  height:150px;
+  margin:0 auto;
 }
 
-#countdown {
-    margin-top: 20px;
-    font-size: 1.5rem;
-    font-weight: bold;
-    text-shadow: 0 0 15px #fff, 0 0 30px #ff4d6d;
-    display: none;
+.result{
+  margin-top:20px;
+  max-height:65vh;
+  overflow-y:auto;
+  animation:fadeIn .6s ease;
 }
 
-/* Floating hearts */
-.heart {
-    position: fixed;
-    bottom: -10px;
-    font-size: 20px;
-    animation: float 6s linear infinite;
-    opacity: 0.7;
+.photo-wrapper{
+  display:flex;
+  justify-content:center;
+  margin-bottom:24px;
 }
 
-@keyframes float {
-    0% {
-        transform: translateY(0);
-        opacity: 0.7;
-    }
-    100% {
-        transform: translateY(-100vh);
-        opacity: 0;
-    }
+.photo-wrapper img{
+  width:240px;
+  border-radius:18px;
+  box-shadow:0 25px 50px rgba(0,0,0,.45);
+}
+
+.countdown{
+  margin-bottom:18px;
+  font-size:16px;
+  animation:glow 2s infinite alternate;
+}
+
+.result p{
+  font-size:17px;
+  line-height:1.7;
+  white-space:pre-line;
+}
+
+@keyframes fadeIn{
+  from{opacity:0;transform:translateY(10px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+@keyframes glow{
+  from{text-shadow:0 0 5px rgba(255,59,122,.4);}
+  to{text-shadow:0 0 18px rgba(255,59,122,.9);}
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
-    <h1 id="mainTitle">Tiara Fathiyah Nurrahmah,<br>Will you be my Valentine?</h1>
+<main class="card">
 
-    <button class="yes" onclick="sayYes()">Yes ❤️</button>
-    <button class="no" onclick="sayNo()">No 💔</button>
-
-    <div id="result"></div>
-    <img id="photo" src="the-notebook.png" alt="The Notebook">
-    <div id="countdown"></div>
+<!-- OPENING -->
+<div id="opening">
+<h1>For someone who changed my world…</h1>
+<p>Enter our date</p>
+<input type="password" id="passwordInput" placeholder="19 11 2024" style="padding:10px;border-radius:8px;border:1px solid #ccc;">
+<br><br>
+<button onclick="checkPassword()">Unlock</button>
+<p id="errorMsg" style="color:red;"></p>
 </div>
 
+<!-- COUNTDOWN 3 2 1 -->
+<div id="count321" class="hidden">
+<h1 id="countText">3</h1>
+</div>
+
+<!-- QUESTION -->
+<div id="question" class="hidden">
+<h1 id="mainTitle">Tiara Fathiyah Nurrahmah,<br>Will you be my Valentine?</h1>
+<div class="button-zone" id="zone">
+<button id="yesBtn">Yes</button>
+<button id="noBtn" style="left:220px;top:50%;transform:translateY(-50%);">No</button>
+</div>
+</div>
+
+<!-- RESULT -->
+<div id="result" class="result hidden">
+<div class="photo-wrapper">
+<img src="the-notebook.png" alt="Us">
+</div>
+
+<h1>She said YES ❤️</h1>
+
+<div class="countdown" id="countdown"></div>
+
+<p id="loveText"></p>
+</div>
+
+</main>
+
 <script>
-function typeEffect(text, element, speed) {
-    let i = 0;
-    element.innerHTML = "";
-    function typing() {
-        if (i < text.length) {
-            element.innerHTML += text.charAt(i);
-            i++;
-            setTimeout(typing, speed);
-        }
-    }
-    typing();
+const passwordInput=document.getElementById("passwordInput");
+const opening=document.getElementById("opening");
+const count321=document.getElementById("count321");
+const question=document.getElementById("question");
+const result=document.getElementById("result");
+const countText=document.getElementById("countText");
+const yesBtn=document.getElementById("yesBtn");
+const noBtn=document.getElementById("noBtn");
+const zone=document.getElementById("zone");
+const loveText=document.getElementById("loveText");
+const countdown=document.getElementById("countdown");
+
+function checkPassword(){
+if(passwordInput.value==="19 11 2024"){
+opening.classList.add("hidden");
+count321.classList.remove("hidden");
+start321();
+}else{
+document.getElementById("errorMsg").textContent="Wrong date.";
+}
 }
 
-function sayYes() {
-    document.getElementById("mainTitle").innerHTML = "She said YES ❤️";
-
-    let longText = "From the first time I met you, something felt different. You make everything brighter without even trying. Your smile, your laugh, the way you care about the smallest things. Every moment with you feels like something I never want to end. And since November 19, 2024, my world has been better in ways I cannot even explain. I am grateful for you every single day.";
-
-    typeEffect(longText, document.getElementById("result"), 40);
-
-    document.getElementById("photo").style.display = "block";
-    document.getElementById("countdown").style.display = "block";
+function start321(){
+let n=3;
+const interval=setInterval(()=>{
+n--;
+if(n===0){
+clearInterval(interval);
+count321.classList.add("hidden");
+question.classList.remove("hidden");
+}else{
+countText.textContent=n;
+}
+},1000);
 }
 
-function sayNo() {
-    alert("Are you sure? Try pressing Yes ❤️");
+noBtn.addEventListener("mouseover",()=>{
+const x=Math.random()*250;
+const y=Math.random()*100;
+noBtn.style.left=x+"px";
+noBtn.style.top=y+"px";
+});
+
+yesBtn.addEventListener("click",()=>{
+question.classList.add("hidden");
+result.classList.remove("hidden");
+document.body.classList.add("romantic");
+fireConfetti();
+typeText();
+updateCountdown();
+setInterval(updateCountdown,1000);
+});
+
+const fullText=`Tiara Fathiyah Nurrahmah 💕
+
+I don’t even know where to start.
+
+I never expected someone could mean this much to me.
+But here you are, changing my days in the simplest ways.
+
+You make normal moments feel special.
+You make bad days feel lighter.
+You make me want to be better without even trying to.
+
+I like how you laugh.
+I like how you talk about things you care about.
+I like how you stay.
+
+Being with you feels calm. It feels right.
+Not dramatic. Not forced. Just real.
+
+I’m grateful for every conversation, every joke, every small moment we share.
+And if I’m being honest, I don’t want this to be temporary.
+
+So yes, this is me choosing you.
+
+Always.`;
+
+let index=0;
+function typeText(){
+if(index<fullText.length){
+loveText.textContent+=fullText.charAt(index);
+index++;
+setTimeout(typeText,25);
+}
 }
 
-let countDownDate = new Date("Nov 19, 2024 00:00:00").getTime();
+function updateCountdown(){
+const start=new Date("November 19, 2024 00:00:00").getTime();
+const now=new Date().getTime();
+const diff=now-start;
 
-let x = setInterval(function() {
-    let now = new Date().getTime();
-    let distance = now - countDownDate;
+const days=Math.floor(diff/(1000*60*60*24));
+const hours=Math.floor((diff/(1000*60*60))%24);
+const minutes=Math.floor((diff/(1000*60))%60);
+const seconds=Math.floor((diff/1000)%60);
 
-    let days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+countdown.textContent=`Together for ${days} days ${hours} hours ${minutes} minutes ${seconds} seconds ❤️`;
+}
 
-    document.getElementById("countdown").innerHTML =
-    "Together for " + days + " days " + hours + " hours " + minutes + " minutes " + seconds + " seconds ❤️";
-
-}, 1000);
-
-/* Floating hearts generator */
-setInterval(function() {
-    let heart = document.createElement("div");
-    heart.className = "heart";
-    heart.innerHTML = "❤️";
-    heart.style.left = Math.random() * 100 + "vw";
-    heart.style.fontSize = (Math.random() * 20 + 10) + "px";
-    heart.style.animationDuration = (Math.random() * 3 + 3) + "s";
-    document.body.appendChild(heart);
-
-    setTimeout(function() {
-        heart.remove();
-    }, 6000);
-
-}, 500);
+const confettiInstance=confetti.create(document.body,{resize:true});
+function fireConfetti(){
+confettiInstance({particleCount:150,spread:100,origin:{y:0.6}});
+}
 </script>
 
 </body>
